@@ -63,7 +63,7 @@ var (
 	renewDuration = 5 * time.Second
 	retryPeriod   = 3 * time.Second
 	// leader election health check
-	healthCheckPort = 8080
+	healthCheckPort = 8888
 	// This is the timeout that determines the time beyond the lease expiry to be
 	// allowed for timeout. Checks within the timeout period after the lease
 	// expires will still return healthy.
