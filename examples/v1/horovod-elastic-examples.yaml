@@ -1,0 +1,39 @@
+apiVersion: kubeflow.org/v1
+kind: MPIJob
+metadata:
+  name: tensorflow-benchmarks
+spec:
+  slotsPerWorker: 1
+  cleanPodPolicy: Running
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+         spec:
+           containers:
+           #- image: mpioperator/tensorflow-benchmarks:latest
+           - image: horovod/horovod:0.20.0-tf2.3.0-torch1.6.0-mxnet1.6.0.post0-py3.7-cuda10.1
+             name: tensorflow-benchmarks
+             command:
+             - horovodrun
+             - -np
+             - "1"
+             - --min-np
+             - "1"
+             - --max-np
+             - "2"
+             - --host-discovery-script
+             - /etc/mpi/discover_hosts.sh
+             - python
+             - /examples/elastic/tensorflow2_mnist_elastic.py
+    Worker:
+      replicas: 2
+      template:
+        spec:
+          containers:
+          #- image: mpioperator/tensorflow-benchmarks:latest
+          - image: horovod/horovod:0.20.0-tf2.3.0-torch1.6.0-mxnet1.6.0.post0-py3.7-cuda10.1
+            name: tensorflow-benchmarks
+            #resources:
+            #  limits:
+            #    nvidia.com/gpu: 1
